@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 900" role="img" aria-labelledby="title description">
+  <title id="title">Tidal archive placeholder</title>
+  <desc id="description">A calm abstract seascape reserved for Felix's visual archive.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#173743"/>
+      <stop offset="1" stop-color="#53716b"/>
+    </linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d2734"/>
+      <stop offset="1" stop-color="#294f55"/>
+    </linearGradient>
+  </defs>
+  <rect width="720" height="900" fill="url(#sky)"/>
+  <circle cx="520" cy="220" r="98" fill="#d2d5c1" fill-opacity=".78"/>
+  <path d="M0 460C112 404 201 511 321 462s189-6 399-76v514H0Z" fill="url(#water)"/>
+  <path d="M0 548c116-75 215 17 332-39s194-31 388-109M0 658c108-62 228 12 341-42s211-35 379-101M0 760c108-51 211 10 326-32s221-26 394-99" fill="none" stroke="#c7d3c1" stroke-opacity=".56" stroke-width="5"/>
+  <rect x="52" y="52" width="616" height="796" fill="none" stroke="#e6e4d3" stroke-opacity=".74" stroke-width="3"/>
+</svg>

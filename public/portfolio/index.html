@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>JUNTING ARCHIVE® — 钧霆 · 作品档案</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="/cosmic-scene.css">
+<!-- Site integration: preserve the white entry-video tail through first paint. -->
+<meta name="theme-color" content="#ffffff">
+<script>
+  (() => {
+    const entryMarker = "#entry-video";
+    if (window.location.hash !== entryMarker) return;
+    document.documentElement.classList.add("from-video-entry");
+    try {
+      const cleanUrl = new URL(window.location.href);
+      cleanUrl.hash = "";
+      window.history.replaceState(window.history.state, "", cleanUrl);
+    } catch {}
+  })();
+</script>
+<style>
+  .from-video-entry #veil { background: var(--white); }
+</style>
+<style>
+  /* ============ 设计 tokens:全站只有 3+1 色 ============ */
+  :root {
+    --black: #000000;
+    --white: #ffffff;
+    --red:   #E32B16;   /* 唯一跳色,白名单:只出现在环形标记等仪式处 */
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    width: 100%; height: 100%;
+    background: var(--white); color: var(--black);
+    font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;                 /* 单页:整页不滚动 */
+  }
+  body.locked { overflow: hidden; }
+  ::selection { background: var(--black); color: var(--white); }
+
+  /* ============ 穹顶:铺满整屏,唯一一页 ============ */
+  #dome-section { position: fixed; inset: 0; overflow: hidden; background: var(--white); }
+  #stage { position: absolute; inset: 0; cursor: grab; touch-action: none; }
+  #stage.dragging { cursor: grabbing; }
+
+  /* 四周白色羽化,把 3D 画面融进纸面 */
+  #vignette {
+    position: absolute; inset: 0; pointer-events: none; z-index: 2;
+    background: radial-gradient(ellipse 74% 74% at 50% 50%,
+      rgba(255,255,255,0) 52%, rgba(255,255,255,.55) 79%, rgba(255,255,255,.96) 100%);
+  }
+  /* 黑色面纱:开场从黑里"睁眼",载入后自动淡出 */
+  #veil { position: absolute; inset: 0; pointer-events: none; z-index: 20; background: var(--black); opacity: 1; }
+
+  /* ---------- 固定 UI ---------- */
+  #chrome { position: absolute; inset: 0; z-index: 10; pointer-events: none; }
+  #chrome .hot { pointer-events: auto; }
+
+  /* Site integration: explicit exit; keep outside the render loop. */
+  .portfolio-exit {
+    position: absolute;
+    inset-block-start: calc(max(28px, env(safe-area-inset-top)) + 52px);
+    inset-inline-start: max(32px, env(safe-area-inset-left));
+    min-block-size: 44px;
+    display: inline-flex;
+    align-items: center;
+    padding-inline: 16px;
+    border: 1px solid var(--black);
+    border-radius: 4px;
+    background: var(--white);
+    color: var(--black);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .16em;
+    text-decoration: none;
+    transition: background-color .2s, color .2s, transform .2s;
+  }
+  .portfolio-exit:hover { background: var(--black); color: var(--white); transform: translateY(-1px); }
+  .portfolio-exit:active { transform: translateY(0); }
+  .portfolio-exit:focus-visible { outline: 2px solid var(--black); outline-offset: 4px; }
+
+  @media (max-width: 720px) {
+    .portfolio-exit {
+      inset-block-start: calc(max(18px, env(safe-area-inset-top)) + 48px);
+      inset-inline-start: max(18px, env(safe-area-inset-left));
+      padding-inline: 14px;
+      font-size: 10px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .portfolio-exit { transition: none; }
+    .portfolio-exit:hover, .portfolio-exit:active { transform: none; }
+  }
+
+  .wordmark { position: absolute; top: 28px; left: 32px; font-weight: 700; font-size: 15px; letter-spacing: .14em; }
+  .wordmark sup { font-size: 8px; vertical-align: super; }
+  .wordmark small { display: block; margin-top: 6px; font-size: 10px; font-weight: 400; letter-spacing: .32em; }
+
+  .filters { position: absolute; top: 30px; right: 32px; display: flex; gap: 26px; font-size: 11px; letter-spacing: .22em; font-weight: 500; }
+  .filters button {
+    background: none; border: none; cursor: pointer; font: inherit; letter-spacing: inherit; color: var(--black);
+    padding: 2px 0 6px; position: relative; opacity: .35; transition: opacity .25s;
+  }
+  .filters button:hover { opacity: .75; }
+  .filters button.on { opacity: 1; }
+  .filters button.on::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--black); }
+  .filters button i { font-style: normal; font-size: 9px; margin-left: 5px; opacity: .55; }
+
+  .hint {
+    position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+    font-size: 10px; letter-spacing: .42em; text-indent: .42em; white-space: nowrap;
+    opacity: 0; transition: opacity .8s;
+  }
+  .hint.show { opacity: .5; }
+
+  .counter { position: absolute; bottom: 24px; right: 32px; font-size: 10px; letter-spacing: .2em; text-align: right; line-height: 1.7; opacity: .55; }
+
+  /* ---------- 中央黑球:进度条 + 自转开关 + 视觉锚点 ---------- */
+  #orb {
+    position: absolute; left: 50%; top: 50%; z-index: 5; width: 150px; height: 150px;
+    transform: translate(-50%, -50%); pointer-events: auto; cursor: pointer; user-select: none;
+  }
+  #orb .ball {
+    position: absolute; inset: 9%; background: var(--black); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+  }
+  #orb .ball .label { color: var(--white); font-weight: 600; font-size: 13px; letter-spacing: .1em; transition: opacity .4s; }
+  #orb svg.ring { position: absolute; inset: 0; width: 100%; height: 100%; animation: spin 14s linear infinite; }
+  #orb svg.ring text { font-size: 7.5px; letter-spacing: .42em; fill: var(--black); font-weight: 600; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #orb:hover .ball { box-shadow: 0 0 0 6px rgba(0,0,0,.06); }
+
+  /* ============ 大图查看器 ============ */
+  #viewer { position: fixed; inset: 0; z-index: 40; background: var(--white); opacity: 0; visibility: hidden; }
+  #viewer .stagebox { position: absolute; inset: 0; }
+  #viewer .frame { position: absolute; left: 0; top: 0; box-shadow: 0 24px 80px rgba(0,0,0,.16); will-change: transform; overflow: hidden; }
+  #viewer .frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  #viewer .cap { position: absolute; left: 50%; bottom: 30px; transform: translateX(-50%); display: flex; align-items: baseline; gap: 22px; white-space: nowrap; }
+  #viewer .cap .no { font-size: 13px; font-weight: 700; letter-spacing: .18em; }
+  #viewer .cap .tag { font-size: 10px; letter-spacing: .3em; padding: 4px 10px; border: 1px solid var(--black); }
+  #viewer .cap .idx { font-size: 10px; letter-spacing: .2em; opacity: .45; }
+  #viewer .x { position: absolute; top: 22px; right: 26px; width: 44px; height: 44px; border: none; background: none; cursor: pointer; font-size: 22px; line-height: 1; color: var(--black); }
+  #viewer .nav { position: absolute; top: 50%; transform: translateY(-50%); width: 54px; height: 54px; border: none; cursor: pointer; background: var(--black); color: var(--white); font-size: 17px; border-radius: 50%; transition: transform .2s; }
+  #viewer .nav:hover { transform: translateY(-50%) scale(1.1); }
+  #viewer .nav.prev { left: 28px; }
+  #viewer .nav.next { right: 28px; }
+
+  @media (max-width: 720px) {
+    .wordmark { top: 18px; left: 18px; font-size: 12px; }
+    .wordmark small { letter-spacing: .22em; font-size: 9px; }
+    .filters { top: auto; bottom: 74px; right: 50%; transform: translateX(50%); gap: 20px; }
+    .counter { display: none; }
+    #orb { width: 124px; height: 124px; }
+    #viewer .nav { width: 42px; height: 42px; font-size: 14px; }
+    #viewer .nav.prev { left: 10px; }
+    #viewer .nav.next { right: 10px; }
+    #viewer .cap { gap: 12px; bottom: 20px; }
+  }
+
+  #fallback { position: fixed; inset: 0; z-index: 90; background: var(--white); display: none; align-items: center; justify-content: center; text-align: center; padding: 8vw; font-size: 12px; letter-spacing: .2em; line-height: 2.2; }
+</style>
+</head>
+<body class="cosmic-archive">
+
+  <!-- ============ 唯一一页:360° 穹顶 ============ -->
+  <section id="dome-section">
+    <div id="stage"></div>
+    <div id="vignette"></div>
+    <div id="veil"></div>
+
+    <div id="chrome">
+      <div class="wordmark">
+        JUNTING&nbsp;ARCHIVE<sup>®</sup>
+        <small>钧霆 · 个人作品档案</small>
+      </div>
+
+      <a class="portfolio-exit hot" href="/#portfolio-gallery" aria-label="返回影像馆入口">← 返回影像馆入口</a>
+
+      <div class="filters hot">
+        <button data-f="all" class="on">ALL <i id="c-all">—</i></button>
+        <button data-f="a">VISUAL <i id="c-a">—</i></button>
+        <button data-f="b">BUILD <i id="c-b">—</i></button>
+      </div>
+
+      <div class="hint" id="hint">拖 拽 旋 转 &nbsp;·&nbsp; 点 击 查 看</div>
+
+      <div class="counter" id="counter">
+        <span id="counter-line">— WORKS</span><br>
+        DESIGNED&nbsp;&amp;&nbsp;BUILT&nbsp;BY&nbsp;JUNTING
+      </div>
+    </div>
+
+    <div id="orb">
+      <svg class="ring" viewBox="0 0 100 100">
+        <defs><path id="ringpath" d="M 50,50 m -46,0 a 46,46 0 1,1 92,0 a 46,46 0 1,1 -92,0"/></defs>
+        <text><textPath href="#ringpath" id="ringtext">JUNTING ARCHIVE · PORTFOLIO WORKS · DRAG TO ORBIT · CLICK TO VIEW · </textPath></text>
+      </svg>
+      <div class="ball"><span class="label" id="orb-label">…</span></div>
+    </div>
+  </section>
+
+  <!-- 查看器 -->
+  <div id="viewer">
+    <div class="stagebox" id="viewer-box"></div>
+    <button class="x" id="viewer-x" aria-label="close">✕</button>
+    <button class="nav prev" id="viewer-prev" aria-label="prev">←</button>
+    <button class="nav next" id="viewer-next" aria-label="next">→</button>
+    <div class="cap">
+      <span class="no" id="cap-no">NO. —</span>
+      <span class="tag" id="cap-tag">—</span>
+      <span class="idx" id="cap-idx">—</span>
+    </div>
+  </div>
+
+  <div id="fallback">
+    该页面需要通过本地服务器打开(浏览器安全限制会拦截直接双击的 index.html)。<br>
+    请在完整项目根目录运行「npm run dev」,再访问 /portfolio/index.html;若浏览器不支持 WebGL 也会看到本提示。
+  </div>
+
+  <!-- 库全本地化:离线可用,不依赖任何 CDN -->
+  <script src="./vendor/gsap.min.js"></script>
+  <script type="importmap">{ "imports": { "three": "./vendor/three.module.js" } }</script>
+  <script type="module" src="./app.js"></script>
+  <script type="module" src="../cosmic-archive.js"></script>
+</body>
+</html>

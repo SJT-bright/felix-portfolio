@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#07121d">
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="/cosmic-scene.css">
+    <title>Felix 个人网站</title>
+    <style>
+      html,
+      body {
+        min-height: 100%;
+        margin: 0;
+        background: #030916;
+      }
+
+      body.site-loading {
+        overflow: hidden;
+      }
+
+      .site-loader {
+        --site-loader-angle: 0deg;
+        --site-loader-dashoffset: 100;
+        position: fixed;
+        z-index: 1000;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        overflow: clip;
+        color: #e9f4ff;
+        background:
+          radial-gradient(circle at 50% 48%, rgb(18 55 105 / 42%), transparent 31%),
+          radial-gradient(circle at 72% 18%, rgb(18 63 124 / 14%), transparent 24%),
+          #030916;
+        font-family: Aptos, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+        opacity: 1;
+        transition: opacity 420ms cubic-bezier(0.7, 0, 0.84, 0), visibility 420ms step-end;
+      }
+
+      .site-loader[hidden] {
+        display: none;
+      }
+
+      .site-loader[data-state="exiting"] {
+        visibility: hidden;
+        opacity: 0;
+      }
+
+      .site-loader__brand {
+        position: absolute;
+        inset-block-start: max(1.5rem, env(safe-area-inset-top));
+        inset-inline-end: max(1.5rem, env(safe-area-inset-right));
+        display: grid;
+        gap: 0.55rem;
+        margin: 0;
+        color: rgb(233 244 255 / 92%);
+        font-size: clamp(0.625rem, 1.2vw, 0.875rem);
+        font-weight: 300;
+        letter-spacing: 0.28em;
+        line-height: 1.2;
+        text-align: end;
+      }
+
+      .site-loader__brand strong {
+        font-size: clamp(0.75rem, 1.45vw, 1.0625rem);
+        font-weight: 300;
+        letter-spacing: 0.16em;
+      }
+
+      .site-loader__stack {
+        display: grid;
+        place-items: center;
+        gap: clamp(1rem, 2.4vmin, 1.5rem);
+      }
+
+      .site-loader__visual {
+        position: relative;
+        inline-size: min(74vmin, 42rem);
+        aspect-ratio: 1;
+        isolation: isolate;
+      }
+
+      .site-loader__art,
+      .site-loader__progress-svg,
+      .site-loader__dot-orbit {
+        position: absolute;
+        inset: 0;
+        display: block;
+        inline-size: 100%;
+        block-size: 100%;
+      }
+
+      .site-loader__art {
+        pointer-events: none;
+        user-select: none;
+      }
+
+      .site-loader__art--planet {
+        z-index: 1;
+        -webkit-mask-image: radial-gradient(circle, #000 0 29%, transparent 30.5%);
+        mask-image: radial-gradient(circle, #000 0 29%, transparent 30.5%);
+      }
+
+      .site-loader__art--orbit {
+        z-index: 2;
+        opacity: 0.72;
+        mix-blend-mode: screen;
+        transform: rotate(var(--site-loader-angle));
+        transition: transform 80ms linear;
+        -webkit-mask-image: radial-gradient(circle, transparent 0 33%, #000 36%, #000 50%, transparent 51%);
+        mask-image: radial-gradient(circle, transparent 0 33%, #000 36%, #000 50%, transparent 51%);
+        will-change: transform;
+      }
+
+      .site-loader__progress-svg {
+        z-index: 3;
+        overflow: visible;
+        filter: drop-shadow(0 0 0.45rem rgb(112 190 255 / 52%));
+        transform: rotate(-90deg);
+      }
+
+      .site-loader__track,
+      .site-loader__meter {
+        fill: none;
+        stroke-width: 0.42;
+      }
+
+      .site-loader__track {
+        stroke: rgb(178 215 247 / 18%);
+      }
+
+      .site-loader__meter {
+        stroke: #caeaff;
+        stroke-linecap: round;
+        stroke-dasharray: 100;
+        stroke-dashoffset: var(--site-loader-dashoffset);
+        transition: stroke-dashoffset 80ms linear;
+      }
+
+      .site-loader__dot-orbit {
+        z-index: 4;
+        inset: 9.7%;
+        inline-size: auto;
+        block-size: auto;
+        transform: rotate(var(--site-loader-angle));
+        transition: transform 80ms linear;
+      }
+
+      .site-loader__dot {
+        position: absolute;
+        inset-block-start: -0.2rem;
+        inset-inline-start: 50%;
+        inline-size: clamp(0.28rem, 0.75vmin, 0.48rem);
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background: #e6f6ff;
+        box-shadow: 0 0.2rem 1rem 0.08rem rgb(94 183 255 / 68%);
+        transform: translateX(-50%);
+      }
+
+      .site-loader__progress {
+        display: grid;
+        justify-items: center;
+        gap: 0.35rem;
+        color: rgb(203 226 246 / 74%);
+        font-size: 0.625rem;
+        letter-spacing: 0.24em;
+      }
+
+      .site-loader__percentage {
+        color: #e9f4ff;
+        font-size: clamp(0.75rem, 1.8vmin, 1rem);
+        font-variant-numeric: tabular-nums;
+        letter-spacing: 0.18em;
+      }
+
+      .site-loader__announcement {
+        position: absolute;
+        inline-size: 1px;
+        block-size: 1px;
+        padding: 0;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      @media (max-width: 36rem) {
+        .site-loader__brand {
+          inset-block-start: max(1rem, env(safe-area-inset-top));
+          inset-inline-end: max(1rem, env(safe-area-inset-right));
+          gap: 0.4rem;
+          letter-spacing: 0.2em;
+        }
+
+        .site-loader__visual {
+          inline-size: min(82vmin, 24rem);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .site-loader,
+        .site-loader__art--orbit,
+        .site-loader__meter,
+        .site-loader__dot-orbit {
+          transition: none;
+        }
+
+        .site-loader__art--orbit,
+        .site-loader__dot-orbit {
+          transform: none;
+          will-change: auto;
+        }
+
+        .site-loader__dot {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body class="site-loading">
+    <div
+      id="site-loader"
+      class="site-loader"
+      data-progress="0.00"
+      data-state="loading"
+      data-outcome="pending"
+      style="--site-loader-angle: 0deg; --site-loader-dashoffset: 100;"
+    >
+      <p class="site-loader__brand">
+        <span>DIGITAL EXPERIENCE</span>
+        <strong>BY 司钧霆 FELIX</strong>
+      </p>
+      <div class="site-loader__stack">
+        <div class="site-loader__visual" aria-hidden="true">
+          <img
+            class="site-loader__art site-loader__art--planet"
+            src="/loader/planet-loader-art.png"
+            width="864"
+            height="864"
+            alt=""
+            fetchpriority="high"
+            decoding="async"
+            data-site-loader-art
+          >
+          <img
+            class="site-loader__art site-loader__art--orbit"
+            src="/loader/planet-loader-art.png"
+            width="864"
+            height="864"
+            alt=""
+            decoding="async"
+          >
+          <svg class="site-loader__progress-svg" viewBox="0 0 100 100" aria-hidden="true">
+            <circle class="site-loader__track" cx="50" cy="50" r="40.3" pathLength="100" />
+            <circle class="site-loader__meter" cx="50" cy="50" r="40.3" pathLength="100" />
+          </svg>
+          <span class="site-loader__dot-orbit" aria-hidden="true"><span class="site-loader__dot"></span></span>
+        </div>
+        <div
+          class="site-loader__progress"
+          role="progressbar"
+          aria-label="首页资源加载进度"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="0"
+        >
+          <span class="site-loader__percentage" data-site-loader-percentage>000%</span>
+          <span>ORBITAL LOADING</span>
+        </div>
+      </div>
+      <p class="site-loader__announcement" role="status" aria-live="polite" data-site-loader-announcement>
+        正在加载首页体验。
+      </p>
+    </div>
+    <div id="root">
+      <main class="boot-fallback" aria-label="Felix 个人网站">
+        <h1>Felix</h1>
+        <p>SJTbright-future</p>
+        <nav aria-label="页面入口">
+          <a href="/">返回首页</a>
+          <a href="/lab">Felix 创作实验室</a>
+        </nav>
+      </main>
+    </div>
+    <noscript>
+      <style>
+        #site-loader { display: none !important; }
+        body.site-loading { overflow: auto; }
+      </style>
+      <p>此网站需要启用 JavaScript 才能展示动态图片墙。</p>
+    </noscript>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

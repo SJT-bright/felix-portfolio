@@ -1,0 +1,186 @@
+:root {
+  --cosmos-night: #030711;
+  --cosmos-nebula: #103260;
+  --cosmos-haze: #0b1935;
+  --cosmos-star: #e5f1ff;
+  --cosmos-blue: #88bbf2;
+  --cosmos-distant: #6384b5;
+  --cosmos-clear: #88bbf200;
+  --cosmos-panel: #07101ee8;
+  --cosmos-reveal-duration: 850ms;
+  --cosmos-ease: cubic-bezier(.22, 1, .36, 1);
+}
+
+body.cosmic-site { background: var(--cosmos-night); }
+.cosmic-scene {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+  background:
+    radial-gradient(ellipse at 82% 16%, var(--cosmos-nebula), var(--cosmos-clear) 52%),
+    radial-gradient(ellipse at 24% 78%, var(--cosmos-haze), var(--cosmos-clear) 60%),
+    var(--cosmos-night);
+}
+.cosmic-scene::before {
+  content: "";
+  position: absolute;
+  inset: -12%;
+  background: radial-gradient(ellipse at 65% 35%, #599ce615, #162c5900 48%);
+  animation: cosmic-nebula-drift 36s ease-in-out infinite alternate;
+}
+
+.cosmic-scene::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.1;
+  background:
+    radial-gradient(circle at 18% 18%, color-mix(in oklab, white 18%, transparent 82%) 0 2px, transparent 2.4%),
+    radial-gradient(circle at 62% 72%, color-mix(in oklab, var(--cosmos-blue) 24%, transparent 76%) 0 1.8px, transparent 2.1%),
+    radial-gradient(circle at 82% 24%, color-mix(in oklab, var(--cosmos-star) 20%, transparent 80%) 0 1.2px, transparent 1.4%),
+    radial-gradient(circle at 50% 50%, color-mix(in oklab, var(--cosmos-blue) 17%, transparent 83%), transparent 45%);
+  mix-blend-mode: screen;
+  animation: cosmos-sparkle 12s linear infinite;
+}
+
+.cosmic-scene.cosmic-chapter-active::after {
+  opacity: 0.2;
+  animation-duration: 8s;
+}
+
+.cosmic-scene canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.cosmic-scene[data-paused="true"]::before { animation-play-state: paused; }
+.cosmic-site #root { position: relative; z-index: 1; }
+
+/* Every chapter reveals the same fixed sky, without a seam at its boundary. */
+.cosmic-site :is(.profile-landing, .gallery-section, .project-showcase, .lab-gateway, .lab-page,
+  .scroll-expand, .scroll-expand__stage, .scroll-expand__frame, .scroll-expand__fallback) {
+  background: none;
+}
+.cosmic-site .project-showcase__starfield { display: none; }
+.cosmic-site .scroll-expand[data-enabled="false"] :is(.scroll-expand__grade, .scroll-expand__scrim) { display: none; }
+.cosmic-site .scroll-expand[data-enabled="false"]:not(.creation-bridge) .scroll-expand__content {
+  inset-block: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.cosmic-site .project-card-body { background: var(--cosmos-panel); }
+.cosmic-site .project-showcase__header,
+.cosmic-site .project-bento-grid__item--entry,
+.cosmic-site .portfolio-gateway {
+  transition-duration: var(--cosmos-reveal-duration);
+  filter: none;
+}
+.cosmic-site .portfolio-gateway { transition-delay: 100ms; }
+.cosmic-site .cosmic-reveal {
+  --text-rhythm-delay: 0ms;
+  opacity: 0;
+  transform: translate3d(0, 24px, 0) scale(0.985);
+  filter: blur(8px);
+  animation: text-rhythm-pop var(--cosmos-reveal-duration) var(--cosmos-ease) both;
+  animation-delay: var(--text-rhythm-delay);
+  will-change: opacity, transform, filter;
+}
+
+.cosmic-site .cosmic-reveal.cosmic-revealed {
+  animation-play-state: running;
+}
+
+.cosmic-site .cosmic-reveal:not(.cosmic-revealed) {
+  animation-play-state: paused;
+}
+
+.cosmic-site .gallery-wall-frame { transition-delay: 100ms; }
+
+@keyframes text-rhythm-pop {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 30px, 0) scale(0.975);
+    filter: blur(12px);
+  }
+
+  55% {
+    opacity: 0.9;
+    transform: translate3d(0, -3px, 0) scale(1.015);
+    filter: blur(2px);
+  }
+
+  80% {
+    opacity: 1;
+    transform: translate3d(0, 2px, 0) scale(0.992);
+    filter: blur(1px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes cosmos-sparkle {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0.08;
+  }
+
+  50% {
+    transform: translate3d(0, 1%, 0);
+    opacity: 0.2;
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0.08;
+  }
+}
+
+/* The archive keeps its photos and controls above the same star field. */
+body.cosmic-archive { background: var(--cosmos-night); color: var(--cosmos-star); }
+.cosmic-archive #dome-section { z-index: 1; background: none; }
+.cosmic-archive #vignette {
+  background: radial-gradient(ellipse 74% 74% at 50% 50%, #03071100 48%, #03071177 82%, #030711dd 100%);
+}
+.cosmic-archive .portfolio-exit,
+.cosmic-archive #viewer .nav {
+  background: var(--cosmos-panel);
+  color: var(--cosmos-star);
+  border: 1px solid var(--cosmos-distant);
+}
+.cosmic-archive .portfolio-exit:hover { background: var(--cosmos-nebula); color: var(--cosmos-star); }
+.cosmic-archive .portfolio-exit:focus-visible { outline-color: var(--cosmos-blue); }
+.cosmic-archive .filters button,
+.cosmic-archive #viewer .x { color: var(--cosmos-star); }
+.cosmic-archive .filters button { opacity: .65; }
+.cosmic-archive .filters button.on { opacity: 1; }
+.cosmic-archive .filters button.on::after { background: var(--cosmos-blue); }
+.cosmic-archive #orb .ball {
+  background: radial-gradient(circle at 32% 24%, #588dcc, #14315d 42%, var(--cosmos-night) 80%);
+  box-shadow: inset -12px -8px 24px #01040c, 0 0 35px #437ab52e;
+  border: 1px solid var(--cosmos-distant);
+}
+.cosmic-archive #orb svg.ring text { fill: var(--cosmos-blue); }
+.cosmic-archive #viewer, .cosmic-archive #fallback { background: var(--cosmos-panel); }
+.cosmic-archive #viewer .cap .tag { border-color: var(--cosmos-distant); }
+.cosmic-archive ::selection { background: var(--cosmos-blue); color: var(--cosmos-night); }
+@keyframes cosmic-nebula-drift {
+  from { transform: translate3d(-2%, 1%, 0); opacity: .45; }
+  to { transform: translate3d(2%, -1%, 0); opacity: .85; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cosmic-scene::before,
+  .cosmic-scene::after { animation: none; }
+  .cosmic-site .cosmic-reveal {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: none;
+    animation: none;
+  }
+  .cosmic-site :is(.project-showcase__header, .project-bento-grid__item--entry, .portfolio-gateway) { transition: none; }
+  .cosmic-archive #orb svg.ring { animation: none; }
+}

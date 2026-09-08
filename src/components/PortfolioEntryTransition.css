@@ -1,0 +1,350 @@
+.portfolio-transition {
+  position: fixed;
+  z-index: var(--z-portfolio-transition);
+  inset: 0;
+  display: grid;
+  block-size: 100svh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 28% 20%, rgba(110, 172, 255, 0.26), rgba(110, 172, 255, 0) 42%),
+    radial-gradient(circle at 75% 72%, rgba(80, 150, 255, 0.24), rgba(80, 150, 255, 0) 48%),
+    linear-gradient(180deg, #050712 0%, #04080f 52%, #061124 100%);
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition:
+    opacity var(--dur-short) var(--ease-out),
+    visibility 0s linear var(--dur-short);
+}
+
+.portfolio-transition[data-active="true"] {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.portfolio-transition[data-complete="true"] {
+  background: var(--color-archive-paper);
+  transition-delay: 0s;
+}
+
+.portfolio-transition[data-complete="true"] .portfolio-transition__cosmos {
+  animation-play-state: paused;
+}
+
+.portfolio-transition__cosmos {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  background:
+    radial-gradient(1.2px 1.2px at 12% 18%, rgba(255, 255, 255, 0.88), transparent 46%),
+    radial-gradient(1px 1px at 71% 34%, rgba(235, 248, 255, 0.8), transparent 44%),
+    radial-gradient(1px 1px at 64% 65%, rgba(203, 230, 255, 0.72), transparent 50%),
+    radial-gradient(1px 1px at 41% 82%, rgba(189, 221, 255, 0.66), transparent 48%),
+    radial-gradient(1.5px 1.5px at 88% 12%, rgba(255, 255, 255, 0.66), transparent 48%),
+    radial-gradient(1.3px 1.3px at 30% 56%, rgba(220, 238, 255, 0.66), transparent 47%),
+    radial-gradient(1px 1px at 8% 40%, rgba(210, 237, 255, 0.6), transparent 51%),
+    radial-gradient(1px 1px at 55% 27%, rgba(245, 252, 255, 0.52), transparent 52%),
+    radial-gradient(1px 1px at 26% 74%, rgba(196, 227, 255, 0.58), transparent 49%);
+  animation: portfolio-cosmos-drift 50s linear infinite;
+}
+
+.portfolio-transition__cosmos::before,
+.portfolio-transition__cosmos::after {
+  position: absolute;
+  inset: -25%;
+  content: "";
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0.9;
+}
+
+.portfolio-transition__cosmos::before {
+  background:
+    radial-gradient(1.6px 1.6px at 24% 30%, rgba(255, 255, 255, 0.6), transparent 52%),
+    radial-gradient(1.2px 1.2px at 76% 60%, rgba(208, 236, 255, 0.52), transparent 53%),
+    radial-gradient(1px 1px at 50% 16%, rgba(220, 244, 255, 0.56), transparent 50%),
+    radial-gradient(1px 1px at 82% 30%, rgba(188, 224, 255, 0.48), transparent 55%);
+  animation: portfolio-cosmos-orbit 26s linear infinite;
+}
+
+.portfolio-transition__cosmos::after {
+  background:
+    radial-gradient(1px 1px at 62% 84%, rgba(240, 252, 255, 0.5), transparent 52%),
+    radial-gradient(1.3px 1.3px at 33% 20%, rgba(220, 239, 255, 0.54), transparent 50%),
+    radial-gradient(1px 1px at 14% 92%, rgba(207, 230, 255, 0.52), transparent 50%),
+    radial-gradient(1.2px 1.2px at 90% 80%, rgba(236, 249, 255, 0.52), transparent 48%);
+  animation: portfolio-cosmos-orbit 26s linear infinite reverse;
+}
+
+.portfolio-transition__sweep {
+  position: absolute;
+  z-index: 2;
+  top: var(--portfolio-transition-sweep-top, 18%);
+  left: var(--portfolio-transition-sweep-left, -28%);
+  inline-size: var(--portfolio-transition-sweep-length, 240px);
+  block-size: 0.09rem;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--color-archive-clear),
+    var(--color-archive-paper) 22%,
+    var(--color-profile-accent),
+    var(--color-archive-clear)
+  );
+  transform-origin: left center;
+  transform: rotate(var(--portfolio-transition-sweep-angle, -38deg));
+  opacity: 0;
+  filter: blur(0.018rem);
+  animation: portfolio-transition-sweep var(--portfolio-transition-sweep-duration, 8s) cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  animation-delay: var(--portfolio-transition-sweep-delay, 0.6s);
+  pointer-events: none;
+}
+
+.portfolio-transition__shooting-star {
+  --shooting-star-size: 1;
+  --shooting-star-opacity: 0.48;
+  position: absolute;
+  top: var(--shooting-star-top);
+  left: var(--shooting-star-left);
+  inline-size: var(--shooting-star-length);
+  block-size: 0.085rem;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, var(--shooting-star-opacity)) 0%,
+    rgba(200, 236, 255, 0.72) 40%,
+    rgba(160, 220, 255, 0) 80%
+  );
+  transform-origin: left center;
+  filter: blur(0.02rem);
+  opacity: 0;
+  animation: portfolio-transition-shooting-star var(--shooting-star-duration) ease-in-out infinite;
+  animation-delay: var(--shooting-star-delay);
+  pointer-events: none;
+}
+
+.portfolio-transition__video {
+  grid-area: 1 / 1;
+  position: relative;
+  z-index: 0;
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.portfolio-transition[data-complete="true"] .portfolio-transition__cosmos {
+  opacity: 0;
+  transition: opacity 140ms linear;
+}
+
+.portfolio-transition:not([data-active="true"]) .portfolio-transition__cosmos,
+.portfolio-transition:not([data-active="true"]) .portfolio-transition__cosmos::before,
+.portfolio-transition:not([data-active="true"]) .portfolio-transition__cosmos::after,
+.portfolio-transition:not([data-active="true"]) .portfolio-transition__cosmos span {
+  animation-play-state: paused;
+}
+
+.portfolio-transition__skip {
+  position: absolute;
+  z-index: 2;
+  inset-block-start: max(var(--space-4), env(safe-area-inset-top));
+  inset-inline-end: max(var(--space-4), env(safe-area-inset-right));
+  min-block-size: 2.75rem;
+  padding-inline: var(--space-4);
+  border: var(--rule-thin) solid currentColor;
+  border-radius: var(--radius-card);
+  background: var(--color-archive-clear);
+  color: var(--color-archive-paper);
+  cursor: pointer;
+  font: inherit;
+  font-size: var(--text-contact);
+  letter-spacing: var(--tracking-detail);
+  mix-blend-mode: difference;
+  transition: opacity var(--dur-instant) linear;
+}
+
+.portfolio-transition__skip:focus-visible {
+  outline: var(--rule-progress) solid currentColor;
+  outline-offset: var(--space-1);
+}
+
+.portfolio-transition__progress {
+  position: absolute;
+  z-index: 2;
+  inset-inline: 0;
+  inset-block-end: 0;
+  block-size: var(--rule-progress);
+  overflow: hidden;
+  background: var(--color-archive-clear);
+  mix-blend-mode: difference;
+  transition: opacity var(--dur-instant) linear;
+}
+
+.portfolio-transition__progress-fill {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  background: var(--color-archive-paper);
+  transform: scaleX(var(--portfolio-transition-progress, 0));
+  transform-origin: left center;
+}
+
+.portfolio-transition[data-complete="true"] .portfolio-transition__skip,
+.portfolio-transition[data-complete="true"] .portfolio-transition__progress {
+  opacity: 0;
+}
+
+.portfolio-transition__status {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@keyframes portfolio-cosmos-drift {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(2%, 1.5%, 0);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes portfolio-cosmos-orbit {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.28;
+  }
+
+  50% {
+    transform: translate3d(2%, -1%, 0) scale(1.05);
+    opacity: 0.65;
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.28;
+  }
+}
+
+@keyframes portfolio-transition-shooting-star {
+  0% {
+    opacity: 0;
+    transform: rotate(var(--shooting-star-angle)) translate3d(0, 0, 0) scaleX(0.08) scaleY(var(--shooting-star-size));
+  }
+
+  10% {
+    opacity: 0.85;
+    transform: rotate(var(--shooting-star-angle)) translate3d(0, 0, 0) scaleX(1) scaleY(var(--shooting-star-size));
+  }
+
+  78% {
+    opacity: 0.85;
+    transform:
+      rotate(var(--shooting-star-angle))
+      translate3d(var(--shooting-star-delta-x), var(--shooting-star-delta-y), 0)
+      scaleX(1) scaleY(var(--shooting-star-size));
+  }
+
+  100% {
+    opacity: 0;
+    transform:
+      rotate(var(--shooting-star-angle))
+      translate3d(var(--shooting-star-delta-x), var(--shooting-star-delta-y), 0)
+      scaleX(0.16) scaleY(var(--shooting-star-size));
+  }
+}
+
+@keyframes portfolio-transition-sweep {
+  0% {
+    opacity: 0;
+    transform:
+      rotate(var(--portfolio-transition-sweep-angle))
+      translate3d(-140%, 0, 0) scaleX(0.16);
+  }
+
+  12% {
+    opacity: var(--portfolio-transition-sweep-strength, 0.48);
+  }
+
+  76% {
+    opacity: var(--portfolio-transition-sweep-strength, 0.48);
+    transform:
+      rotate(var(--portfolio-transition-sweep-angle))
+      translate3d(145%, 0, 0) scaleX(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform:
+      rotate(var(--portfolio-transition-sweep-angle))
+      translate3d(145%, 0, 0) scaleX(1);
+  }
+}
+
+@keyframes portfolio-arc-storm {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: brightness(0.82);
+  }
+
+  50% {
+    transform: translate3d(-2%, 1.5%, 0) scale(1.03);
+    filter: brightness(1);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: brightness(0.82);
+  }
+}
+
+body.portfolio-transition-active {
+  overflow: hidden;
+}
+
+@supports (height: 100dvh) {
+  .portfolio-transition {
+    block-size: 100dvh;
+  }
+}
+
+@media (min-width: 48rem) {
+  .portfolio-transition__skip {
+    inset-block-start: max(var(--space-8), env(safe-area-inset-top));
+    inset-inline-end: max(var(--space-8), env(safe-area-inset-right));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-transition,
+  .portfolio-transition__skip,
+  .portfolio-transition__progress {
+    transition: none;
+  }
+
+  .portfolio-transition__cosmos,
+  .portfolio-transition__cosmos::before,
+  .portfolio-transition__cosmos::after,
+  .portfolio-transition__sweep,
+  .portfolio-transition__shooting-star {
+    animation: none !important;
+  }
+}

@@ -1,0 +1,375 @@
+/* Hallmark · macrostructure: Photographic · genre: atmospheric · tone: austere · anchor hue: ocean-blue (~245°) · theme: Midnight · enrichment: H6 real video · nav: none · footer: bottom progress rule · pre-emit critique: P5 H5 E5 S5 R5 V5 · contrast: static pass; moving video visually reviewed */
+@import url("./tokens.css");
+
+html,
+body {
+  min-block-size: 100%;
+  margin: 0;
+  overflow-x: clip;
+  background: var(--color-ink);
+}
+
+body {
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+.scroll-track {
+  min-block-size: 500dvh;
+}
+
+.presentation-stage {
+  position: sticky;
+  z-index: var(--z-content);
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: 100svh;
+  isolation: isolate;
+  overflow: clip;
+}
+
+@supports (height: 100dvh) {
+  .presentation-stage {
+    block-size: 100dvh;
+  }
+}
+
+#sailing-video,
+.stage-scrim {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+#sailing-video {
+  z-index: var(--z-video);
+  object-fit: cover;
+}
+
+.stage-scrim {
+  z-index: var(--z-scrim);
+  pointer-events: none;
+  background: var(--color-ink-scrim);
+}
+
+.identity,
+.contact,
+.scroll-cue,
+#video-status,
+.progress {
+  position: absolute;
+  z-index: var(--z-content);
+  margin: 0;
+}
+
+.identity {
+  inset-inline-start: max(var(--space-4), env(safe-area-inset-left));
+  inset-block-end: max(var(--space-8), env(safe-area-inset-bottom));
+  min-inline-size: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-identity);
+  font-weight: var(--weight-regular);
+  letter-spacing: var(--tracking-display);
+  line-height: var(--line-height-identity);
+  overflow-wrap: anywhere;
+}
+
+.contact {
+  inset-inline-end: max(var(--space-4), env(safe-area-inset-right));
+  inset-block-start: max(var(--space-4), env(safe-area-inset-top));
+  color: var(--color-detail);
+  font-size: var(--text-contact);
+  letter-spacing: var(--tracking-detail);
+  line-height: var(--line-height-contact);
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.scroll-cue {
+  inset-inline-start: max(var(--space-4), env(safe-area-inset-left));
+  inset-block-end: max(var(--space-4), env(safe-area-inset-bottom));
+  color: var(--color-detail);
+  font-size: var(--text-cue);
+  letter-spacing: var(--tracking-detail);
+}
+
+#video-status {
+  inset-inline-start: max(var(--space-4), env(safe-area-inset-left));
+  inset-block-start: max(var(--space-12), env(safe-area-inset-top));
+  max-inline-size: var(--measure-status);
+  color: var(--color-text);
+  font-size: var(--text-status);
+  letter-spacing: var(--tracking-detail);
+}
+
+body.video-failed #video-status[hidden] {
+  display: block !important;
+}
+
+.progress {
+  inset-inline: max(var(--space-4), env(safe-area-inset-left)) max(var(--space-4), env(safe-area-inset-right));
+  inset-block-end: var(--edge-flush);
+  block-size: var(--rule-progress);
+  background: var(--color-rule);
+}
+
+.progress__fill {
+  inline-size: 100%;
+  block-size: 100%;
+  transform: scaleX(var(--scroll-progress));
+  transform-origin: left center;
+  background: var(--color-text);
+  transition: transform var(--dur-short) var(--ease-out);
+}
+
+.gallery-section {
+  min-block-size: 100svh;
+  padding: max(var(--space-8), env(safe-area-inset-top))
+    max(var(--space-4), env(safe-area-inset-right))
+    max(var(--space-8), env(safe-area-inset-bottom))
+    max(var(--space-4), env(safe-area-inset-left));
+  overflow: clip;
+  background: var(--color-gallery);
+}
+
+.gallery-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.gallery-header h2,
+.gallery-header p,
+.gallery-card,
+.gallery-card figcaption {
+  margin: 0;
+}
+
+.gallery-header h2 {
+  min-inline-size: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-gallery-title);
+  font-weight: var(--weight-regular);
+  line-height: var(--line-height-contact);
+  overflow-wrap: anywhere;
+}
+
+.gallery-header p,
+.gallery-card figcaption,
+.carousel__controls {
+  color: var(--color-detail);
+  font-size: var(--text-contact);
+  letter-spacing: var(--tracking-detail);
+}
+
+.gallery-header p,
+.gallery-card__placeholder small,
+.gallery-card figcaption,
+.carousel__controls button,
+.carousel__controls output {
+  white-space: nowrap;
+}
+
+.carousel {
+  position: relative;
+  min-inline-size: 0;
+  margin-block-start: var(--space-10);
+  outline: none;
+}
+
+.carousel:focus-visible {
+  outline: var(--rule-progress) solid var(--color-focus);
+  outline-offset: var(--space-2);
+}
+
+.carousel__stage {
+  display: flex;
+  gap: var(--space-4);
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-block-end: var(--space-4);
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-inline: contain;
+  scrollbar-color: var(--color-gallery-border-active) var(--color-gallery-card);
+}
+
+.gallery-card {
+  display: grid;
+  flex: 0 0 var(--gallery-card-width-mobile);
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  aspect-ratio: var(--gallery-card-ratio);
+  overflow: clip;
+  border: var(--rule-thin) solid var(--color-gallery-border);
+  border-radius: var(--radius-card);
+  background: var(--color-gallery-card);
+  scroll-snap-align: center;
+}
+
+.gallery-card[aria-current="true"] {
+  border-color: var(--color-gallery-border-active);
+  background: var(--color-gallery-card-active);
+}
+
+.gallery-card__placeholder,
+.gallery-card > img {
+  grid-area: 1 / 1;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.gallery-card__placeholder {
+  z-index: var(--z-gallery-card);
+  display: grid;
+  place-content: center;
+  text-align: center;
+}
+
+.gallery-card__placeholder span {
+  display: block;
+  font-family: var(--font-display);
+  font-size: var(--text-gallery-index);
+  line-height: var(--line-height-identity);
+}
+
+.gallery-card__placeholder small,
+.gallery-card figcaption {
+  text-transform: none;
+}
+
+.gallery-card > img {
+  z-index: var(--z-gallery-image);
+  display: block;
+  object-fit: cover;
+}
+
+.gallery-card figcaption {
+  z-index: var(--z-gallery-caption);
+  grid-row: 2;
+  padding: var(--space-3) var(--space-4);
+}
+
+.carousel__controls {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-5);
+  margin-block-start: var(--space-5);
+  padding-inline: max(var(--space-1), env(safe-area-inset-left))
+    max(var(--space-1), env(safe-area-inset-right));
+}
+
+.carousel__controls button {
+  display: grid;
+  place-items: center;
+  inline-size: var(--gallery-control-size);
+  block-size: var(--gallery-control-size);
+  padding: 0;
+  border: var(--rule-thin) solid var(--color-gallery-border);
+  border-radius: var(--radius-card);
+  color: var(--color-text);
+  background: var(--color-gallery-card);
+  font: inherit;
+  line-height: var(--line-height-control);
+  cursor: pointer;
+  transition: transform var(--dur-instant) var(--ease-out);
+}
+
+.carousel__controls button:active {
+  transform: translateY(var(--rule-thin));
+}
+
+.carousel__controls button:focus-visible {
+  outline: var(--rule-progress) solid var(--color-focus);
+  outline-offset: var(--space-1);
+}
+
+.carousel__controls button:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+.carousel__controls output {
+  min-inline-size: calc(var(--space-12) * 2);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+[data-carousel-ready="true"] .carousel__stage {
+  position: relative;
+  display: block;
+  block-size: var(--gallery-stage-height);
+  overflow: clip;
+  touch-action: pan-y;
+  perspective: var(--gallery-perspective);
+  transform-style: preserve-3d;
+}
+
+[data-carousel-ready="true"] .carousel__controls {
+  display: flex;
+}
+
+[data-carousel-ready="true"] .gallery-card {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  inline-size: var(--gallery-card-width-mobile);
+  transform: translate3d(calc(-50% + var(--card-x, 0px)), -50%, 0)
+    rotateY(var(--card-rotate, 0deg)) scale(var(--card-scale, 1));
+  opacity: var(--card-opacity, 1);
+  z-index: var(--card-layer, var(--z-gallery-card));
+  transition: transform var(--dur-carousel) var(--ease-out),
+    opacity var(--dur-carousel) var(--ease-out);
+  transform-style: preserve-3d;
+}
+
+@media (min-width: 48rem) {
+  .identity {
+    inset-inline-start: max(var(--space-8), env(safe-area-inset-left));
+    inset-block-end: max(var(--space-10), env(safe-area-inset-bottom));
+  }
+
+  .contact {
+    inset-inline-end: max(var(--space-8), env(safe-area-inset-right));
+    inset-block-start: max(var(--space-8), env(safe-area-inset-top));
+  }
+
+  .scroll-cue {
+    inset-inline-start: max(var(--space-8), env(safe-area-inset-left));
+  }
+
+  .gallery-section {
+    padding-inline: max(var(--space-8), env(safe-area-inset-left))
+      max(var(--space-8), env(safe-area-inset-right));
+  }
+
+  .gallery-card {
+    flex-basis: var(--gallery-card-width);
+  }
+
+  [data-carousel-ready="true"] .gallery-card {
+    inline-size: var(--gallery-card-width);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .carousel__controls button:hover {
+    border-color: var(--color-gallery-border-active);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress__fill {
+    transition: none;
+  }
+
+  [data-carousel-ready="true"] .gallery-card {
+    transition: none;
+  }
+
+  .carousel__controls button {
+    transition: none;
+  }
+}

@@ -1,0 +1,689 @@
+/* Hallmark · genre: atmospheric · macrostructure: Marquee Hero · theme: Midnight · tone: austere · anchor hue: ocean-blue (~245°) · enrichment: H6 real video + supplied DriftWall + supplied ScrollExpand · variation: 30%-portal-to-full-bleed · nav: none · footer: bottom progress rule · audience: friends · use: image showcase · pre-emit critique: P5 H5 E5 S5 R5 V5 · contrast: pass (40–41) · slop: pass (42–49) · mobile: pass (34, 49, 50–57) */
+@import url("../../tokens.css");
+
+html,
+body {
+  min-block-size: 100%;
+  margin: 0;
+  overflow-x: clip;
+  background: var(--color-ink);
+}
+
+body {
+  color: var(--color-text);
+  font-family: var(--font-body);
+  line-height: 1.62;
+}
+
+p,
+li,
+dd,
+dt {
+  text-wrap: balance;
+}
+
+#root,
+main {
+  min-block-size: 100%;
+}
+
+/* The loader and video own the first viewport until the prelude has finished. */
+body.home-intro-pending {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body.home-intro-pending main > :not(.scroll-track) {
+  display: none;
+}
+
+body.home-intro-pending .scroll-track {
+  block-size: 100svh;
+  block-size: 100dvh;
+  overflow: clip;
+}
+
+.boot-fallback {
+  min-block-size: 100svh;
+  display: grid;
+  place-content: center;
+  background: var(--color-ink);
+}
+
+noscript {
+  position: fixed;
+  z-index: var(--z-content);
+  inset: auto var(--space-4) var(--space-4);
+  color: var(--color-text);
+}
+
+.scroll-track {
+  min-block-size: 100svh;
+}
+
+@supports (height: 100dvh) {
+  .scroll-track {
+    min-block-size: 100dvh;
+  }
+}
+
+.presentation-stage {
+  position: sticky;
+  z-index: var(--z-content);
+  inset-block-start: 0;
+  inset-inline: 0;
+  min-block-size: 100svh;
+  isolation: isolate;
+  overflow: clip;
+}
+
+@supports (height: 100dvh) {
+  .presentation-stage {
+    min-block-size: 100dvh;
+  }
+}
+
+.prelude-layer,
+.profile-landing {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.prelude-layer {
+  z-index: var(--z-content);
+  overflow: clip;
+  background: var(--color-ink);
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity var(--dur-profile-reveal) var(--ease-out),
+    visibility 0s linear var(--dur-profile-reveal);
+  will-change: opacity;
+  block-size: 100svh;
+  block-size: 100dvh;
+}
+
+#wormhole-video,
+.stage-scrim {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+#wormhole-video {
+  z-index: var(--z-video);
+  object-fit: cover;
+  object-position: center;
+}
+
+.stage-scrim {
+  z-index: var(--z-scrim);
+  pointer-events: none;
+  background:
+    linear-gradient(to top, var(--color-ink) 0%, transparent 60%),
+    var(--color-ink-scrim);
+  transition: opacity var(--dur-medium) var(--ease-out);
+}
+
+.profile-landing {
+  --profile-ink: var(--color-profile-night);
+  --profile-copy: var(--color-profile-copy);
+  --profile-muted: var(--color-profile-muted);
+  position: relative;
+  z-index: var(--z-video);
+  isolation: isolate;
+  block-size: auto;
+  min-block-size: 100svh;
+  min-block-size: 100dvh;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: var(--space-5);
+  padding:
+    max(var(--space-4), env(safe-area-inset-top))
+    max(var(--space-4), env(safe-area-inset-right))
+    max(var(--space-4), env(safe-area-inset-bottom))
+    max(var(--space-4), env(safe-area-inset-left));
+  overflow: clip;
+  background:
+    radial-gradient(circle at 78% 40%, var(--color-profile-glow), transparent 32%),
+    linear-gradient(122deg, var(--color-profile-surface), var(--color-ink) 72%);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--dur-profile-reveal) var(--ease-out),
+    visibility 0s linear var(--dur-profile-reveal);
+}
+
+body.video-complete .prelude-layer {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+body.video-complete .profile-landing {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  filter: blur(0);
+  clip-path: inset(0);
+  transition-delay: 0s;
+}
+
+.profile-landing__masthead,
+.profile-landing__cue,
+.profile-landing__eyebrow,
+.profile-landing__disciplines {
+  margin: 0;
+  color: var(--color-detail);
+  font-size: var(--text-cue);
+  letter-spacing: var(--tracking-detail);
+  line-height: 1.35;
+}
+
+.profile-landing__masthead {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.profile-landing__masthead p {
+  margin: 0;
+}
+
+.profile-landing__masthead p:last-child {
+  text-align: end;
+}
+
+.profile-landing__layout {
+  position: relative;
+  z-index: 2;
+  inline-size: min(100%, var(--measure-profile));
+  min-block-size: 0;
+  margin: clamp(7rem, 27svh, 14rem) auto var(--space-4);
+  display: grid;
+  align-items: center;
+}
+
+.profile-landing__copy {
+  align-self: center;
+  min-inline-size: 0;
+  max-inline-size: 38rem;
+}
+
+.profile-landing__eyebrow {
+  margin-block-end: var(--space-2);
+  color: var(--color-profile-accent);
+  font-size: clamp(0.65rem, 1vw, 0.8125rem);
+}
+
+.profile-landing__copy h1 {
+  min-inline-size: 0;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-profile-title);
+  font-style: normal;
+  font-weight: var(--weight-regular);
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.profile-landing__role {
+  margin: var(--space-2) 0 0;
+  color: var(--color-text);
+  font-size: clamp(0.98rem, 1.6vw, 1.25rem);
+  font-weight: 550;
+  letter-spacing: 0.08em;
+  line-height: 1.28;
+}
+
+.profile-landing__intro {
+  max-inline-size: 40rem;
+  margin: clamp(var(--space-3), 2svh, var(--space-5)) 0 0;
+  color: var(--profile-copy);
+  font-size: var(--text-body);
+  line-height: var(--line-height-copy);
+  max-inline-size: 34rem;
+  text-wrap: pretty;
+}
+
+.profile-landing__disciplines {
+  max-inline-size: 40rem;
+  margin-block-start: var(--space-3);
+  color: var(--profile-muted);
+  font-size: clamp(0.6875rem, 1vw, 0.8125rem);
+  line-height: 1.55;
+}
+
+.profile-landing__proofs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4) var(--space-6);
+  max-inline-size: 41rem;
+  margin: clamp(var(--space-3), 2svh, var(--space-5)) 0 0;
+  padding-block: var(--space-4);
+  border-block: var(--rule-thin) solid var(--color-profile-line);
+}
+
+.profile-landing__proofs div {
+  min-inline-size: 0;
+}
+
+.profile-landing__proofs dt,
+.profile-landing__proofs dd {
+  margin: 0;
+}
+
+.profile-landing__proofs dt {
+  color: var(--color-profile-accent);
+  font-size: var(--text-cue);
+  letter-spacing: var(--tracking-detail);
+  line-height: 1.25;
+}
+
+.profile-landing__proofs dd {
+  margin-block-start: var(--space-1);
+  color: var(--color-text);
+  font-size: clamp(0.75rem, 1.4vw, 0.95rem);
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
+}
+
+.profile-landing__disclaimer {
+  max-inline-size: 41rem;
+  margin: var(--space-2) 0 0;
+  color: var(--profile-muted);
+  font-size: clamp(0.6875rem, 0.9vw, 0.75rem);
+  letter-spacing: 0.04em;
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+
+.profile-landing__portrait {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  margin: 0;
+  overflow: clip;
+  pointer-events: none;
+  /* Fade the photo and its grading together into the shared sky, not the text. */
+  mask-image: linear-gradient(
+    to bottom,
+    var(--color-mask-solid) 64%,
+    color-mix(in srgb, var(--color-mask-solid) 82%, transparent) 76%,
+    color-mix(in srgb, var(--color-mask-solid) 28%, transparent) 90%,
+    transparent 100%
+  );
+}
+
+.profile-landing__portrait img {
+  display: block;
+  inline-size: 100%;
+  block-size: min(80svh, 42rem);
+  object-fit: cover;
+  object-position: center 20%;
+  opacity: 0.78;
+  filter: grayscale(1);
+  mask-image: linear-gradient(to bottom, var(--color-mask-solid) 18%, color-mix(in srgb, var(--color-mask-solid) 73%, transparent) 42%, transparent 98%);
+}
+
+.profile-landing__portrait::before {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, color-mix(in srgb, var(--profile-ink) 22%, transparent) 12%, color-mix(in srgb, var(--profile-ink) 48%, transparent) 30%, color-mix(in srgb, var(--profile-ink) 91%, transparent) 63%, transparent 100%),
+    linear-gradient(90deg, color-mix(in srgb, var(--color-profile-depth) 27%, transparent), color-mix(in srgb, var(--color-profile-tint) 10%, transparent));
+  content: "";
+  pointer-events: none;
+}
+
+.profile-landing__portrait::after {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  background: var(--color-profile-tint);
+  mix-blend-mode: color;
+  opacity: 0.42;
+  content: "";
+  pointer-events: none;
+}
+
+.profile-landing__portrait figcaption {
+  display: none;
+}
+
+.profile-landing__cue {
+  align-self: end;
+  color: var(--profile-muted);
+}
+
+.profile-landing__footer {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.profile-landing__replay {
+  display: inline-flex;
+  gap: var(--space-2);
+  align-items: center;
+  min-block-size: 44px;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-profile-line);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--profile-ink) 50%, transparent);
+  color: var(--profile-copy);
+  font: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: color var(--dur-short), border-color var(--dur-short), background var(--dur-short);
+}
+
+.profile-landing__replay:hover {
+  color: var(--color-text);
+  border-color: var(--color-profile-accent);
+  background: color-mix(in srgb, var(--color-profile-tint) 75%, transparent);
+}
+
+.profile-landing__replay:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 4px;
+}
+
+.profile-star-trail {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+body.video-complete .profile-landing [data-profile-reveal] {
+  animation: profile-copy-enter 820ms var(--ease-out) both;
+  animation-delay: var(--profile-delay, 0ms);
+}
+
+@keyframes profile-copy-enter {
+  from { opacity: 0; transform: translate3d(0, 18px, 0); }
+  75% { opacity: 1; transform: translate3d(0, -1px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+.hero-intro,
+.contact,
+.scroll-cue,
+#video-status,
+.progress {
+  position: absolute;
+  z-index: var(--z-content);
+  margin: 0;
+}
+
+.hero-intro,
+.contact,
+.scroll-cue,
+.progress {
+  transition: opacity var(--dur-medium) var(--ease-out);
+}
+
+.hero-intro {
+  inset-inline: max(var(--space-4), env(safe-area-inset-left)) max(var(--space-4), env(safe-area-inset-right));
+  inset-block-end: calc(max(var(--space-4), env(safe-area-inset-bottom)) + var(--hero-cue-clearance));
+  max-inline-size: 70rem;
+}
+
+.identity {
+  min-inline-size: 0;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-identity);
+  font-style: normal;
+  font-weight: var(--weight-regular);
+  letter-spacing: var(--tracking-display);
+  line-height: var(--line-height-identity);
+  overflow-wrap: anywhere;
+}
+
+.hero-lead,
+.hero-note {
+  margin: 0;
+}
+
+.hero-lead {
+  margin-block-start: var(--space-5);
+  font-size: var(--text-hero-lead);
+  line-height: 1.35;
+  text-wrap: pretty;
+}
+
+.hero-note {
+  max-inline-size: 34rem;
+  margin-block-start: var(--space-3);
+  color: var(--color-detail);
+  font-size: var(--text-hero-note);
+  line-height: 1.75;
+}
+
+.contact {
+  inset-inline-end: max(var(--space-4), env(safe-area-inset-right));
+  inset-block-start: max(var(--space-4), env(safe-area-inset-top));
+  color: var(--color-detail);
+  font-size: var(--text-contact);
+  letter-spacing: var(--tracking-detail);
+  line-height: var(--line-height-contact);
+  white-space: nowrap;
+}
+
+.scroll-cue {
+  inset-inline-start: max(var(--space-4), env(safe-area-inset-left));
+  inset-block-end: max(var(--space-4), env(safe-area-inset-bottom));
+  color: var(--color-detail);
+  font-size: var(--text-cue);
+  letter-spacing: var(--tracking-detail);
+}
+
+.hero-trigger {
+  display: flex;
+  align-items: center;
+  min-block-size: 2.75rem;
+  padding: 0;
+  border: 0;
+  color: var(--color-detail);
+  background: transparent;
+  font: inherit;
+  letter-spacing: var(--tracking-detail);
+  text-align: start;
+  cursor: pointer;
+}
+
+.hero-trigger:focus-visible {
+  outline: var(--rule-progress) solid var(--color-focus);
+  outline-offset: var(--space-2);
+}
+
+.hero-trigger[hidden] { display: none; }
+
+body.video-playing .hero-intro,
+body.video-playing .contact,
+body.video-playing .hero-trigger {
+  opacity: 0;
+  pointer-events: none;
+}
+
+body.video-playing .stage-scrim {
+  opacity: 0;
+}
+
+#video-status {
+  inset-inline-start: max(var(--space-4), env(safe-area-inset-left));
+  inset-block-start: max(var(--space-12), env(safe-area-inset-top));
+  max-inline-size: var(--measure-status);
+  color: var(--color-text);
+  font-size: var(--text-status);
+  letter-spacing: var(--tracking-detail);
+}
+
+.progress {
+  inset-inline: max(var(--space-4), env(safe-area-inset-left)) max(var(--space-4), env(safe-area-inset-right));
+  inset-block-end: var(--edge-flush);
+  block-size: var(--rule-progress);
+  background: var(--color-rule);
+}
+
+.progress__fill {
+  inline-size: 100%;
+  block-size: 100%;
+  transform: scaleX(var(--scroll-progress));
+  transform-origin: left center;
+  background: var(--color-text);
+  transition: transform var(--dur-short) var(--ease-out);
+}
+
+.gallery-section {
+  position: relative;
+  z-index: var(--z-content);
+  padding: clamp(var(--space-12), 10vw, 8rem) max(var(--space-4), env(safe-area-inset-left));
+  padding-block-end: 0;
+  overflow: clip;
+  background:
+    linear-gradient(to bottom, var(--color-profile-surface), transparent 42svh),
+    radial-gradient(circle at 72% 42%, var(--color-gallery-glow), transparent 38%),
+    var(--color-gallery-surface);
+}
+
+.gallery-header {
+  position: relative;
+  z-index: var(--z-content);
+  max-inline-size: var(--gallery-measure);
+  margin-inline: auto;
+}
+
+.gallery-header h2 {
+  min-inline-size: 0;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-gallery-title);
+  font-style: normal;
+  font-weight: var(--weight-regular);
+  letter-spacing: var(--tracking-display);
+  line-height: 0.88;
+  overflow-wrap: anywhere;
+}
+
+.gallery-header p {
+  margin: var(--space-3) 0 0;
+  color: var(--color-detail);
+  font-size: var(--text-contact);
+  letter-spacing: var(--tracking-detail);
+  line-height: 1.6;
+  max-inline-size: var(--measure-copy);
+}
+
+.gallery-wall-frame {
+  position: relative;
+  inline-size: min(100%, var(--gallery-measure));
+  max-block-size: min(var(--gallery-frame-height), 72svh);
+  margin: clamp(var(--space-8), 7vw, 6rem) auto 0;
+}
+
+.gallery-wall-frame::before {
+  position: absolute;
+  z-index: -1;
+  inset: 18% 10%;
+  border-radius: 50%;
+  background: var(--color-gallery-glow);
+  content: "";
+  filter: blur(var(--space-12));
+}
+
+@media (min-width: 48rem) {
+  .profile-landing {
+    gap: var(--space-8);
+    padding:
+      max(var(--space-8), env(safe-area-inset-top))
+      max(var(--space-8), env(safe-area-inset-right))
+      max(var(--space-8), env(safe-area-inset-bottom))
+      max(var(--space-8), env(safe-area-inset-left));
+  }
+
+  .profile-landing__layout {
+    margin-block: var(--space-8);
+    padding-block: var(--space-6);
+  }
+
+  .profile-landing__copy {
+    inline-size: min(54%, 38rem);
+    padding-inline-start: clamp(0rem, 2.8vw, var(--space-12));
+  }
+
+  .profile-landing__portrait img {
+    inline-size: 84%;
+    block-size: 100%;
+    margin-inline-start: auto;
+    object-position: center 32%;
+    mask-image: linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--color-mask-solid) 60%, transparent) 28%, var(--color-mask-solid) 58%);
+  }
+
+  .profile-landing__portrait::before {
+    background:
+      linear-gradient(90deg, color-mix(in srgb, var(--profile-ink) 92%, transparent) 0%, color-mix(in srgb, var(--profile-ink) 84%, transparent) 28%, color-mix(in srgb, var(--profile-ink) 53%, transparent) 50%, color-mix(in srgb, var(--profile-ink) 3%, transparent) 78%),
+      linear-gradient(to bottom, color-mix(in srgb, var(--profile-ink) 33%, transparent) 0%, transparent 28%, color-mix(in srgb, var(--profile-ink) 20%, transparent) 65%, var(--profile-ink) 100%);
+  }
+
+  .profile-landing__copy h1 {
+    font-size: clamp(3.25rem, 7vw, 6rem);
+  }
+
+  .hero-intro {
+    inset-inline-start: max(var(--space-8), env(safe-area-inset-left));
+    inset-inline-end: max(var(--space-8), env(safe-area-inset-right));
+  }
+
+  .contact {
+    inset-inline-end: max(var(--space-8), env(safe-area-inset-right));
+    inset-block-start: max(var(--space-8), env(safe-area-inset-top));
+  }
+
+  .scroll-cue {
+    inset-inline-start: max(var(--space-8), env(safe-area-inset-left));
+  }
+
+  .gallery-section {
+    padding-inline: max(var(--space-8), env(safe-area-inset-left));
+  }
+
+  .gallery-header {
+    padding-inline: var(--space-8);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.video-complete .profile-landing [data-profile-reveal] { animation: none; }
+  .profile-star-trail { display: none; }
+  .prelude-layer,
+  .profile-landing,
+  .hero-intro,
+  .contact,
+  .scroll-cue,
+  .progress,
+  .progress__fill,
+  .stage-scrim {
+    transition: none;
+  }
+}

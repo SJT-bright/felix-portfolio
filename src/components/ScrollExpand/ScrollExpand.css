@@ -1,0 +1,252 @@
+/* Hallmark · component: ScrollExpand · genre: atmospheric · theme: Midnight · motion: clip expansion + media dezoom + content fade */
+.scroll-expand {
+  position: relative;
+  z-index: var(--z-content);
+  inline-size: 100%;
+  color: var(--color-text);
+  background: var(--color-expand-surface);
+}
+
+.scroll-expand--window {
+  block-size: var(--expand-track-height);
+}
+
+.scroll-expand[data-enabled="false"].scroll-expand--window {
+  block-size: 100svh;
+}
+
+.scroll-expand--local {
+  block-size: 100svh;
+  max-block-size: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.scroll-expand__stage {
+  position: sticky;
+  inset-block-start: 0;
+  block-size: 100svh;
+  overflow: clip;
+  isolation: isolate;
+  background: var(--color-expand-surface);
+}
+
+.scroll-expand--local .scroll-expand__stage {
+  block-size: 100%;
+}
+
+@supports (height: 100dvh) {
+  .scroll-expand[data-enabled="false"].scroll-expand--window {
+    block-size: 100dvh;
+  }
+
+  .scroll-expand--local {
+    block-size: 100dvh;
+  }
+
+  .scroll-expand__stage {
+    block-size: 100dvh;
+  }
+
+  .scroll-expand--local .scroll-expand__stage {
+    block-size: 100%;
+  }
+}
+
+.scroll-expand__frame {
+  position: absolute;
+  inset: 0;
+  overflow: clip;
+  clip-path: inset(
+    var(--expand-inset-block)
+    var(--expand-inset-inline)
+    round var(--expand-radius)
+  );
+  background: var(--color-expand-surface);
+}
+
+.scroll-expand__media,
+.scroll-expand__fallback,
+.scroll-expand__grade,
+.scroll-expand__scrim {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.scroll-expand__grade {
+  z-index: var(--z-scrim);
+  background: var(--color-expand-grade);
+  mix-blend-mode: color;
+  pointer-events: none;
+}
+
+.scroll-expand__fallback {
+  background:
+    linear-gradient(135deg, var(--color-expand-surface), var(--color-gallery-card-active));
+}
+
+.scroll-expand__media {
+  z-index: var(--z-video);
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(var(--expand-media-scale));
+  transition: opacity var(--dur-medium) var(--ease-out);
+}
+
+.scroll-expand[data-media-state="ready"] .scroll-expand__media {
+  opacity: 1;
+}
+
+.scroll-expand__scrim {
+  z-index: var(--z-scrim);
+  pointer-events: none;
+  background: var(--color-expand-scrim);
+  opacity: var(--expand-scrim-opacity);
+}
+
+.scroll-expand__opening-title,
+.scroll-expand__content,
+.scroll-expand__hint,
+.scroll-expand__status {
+  position: absolute;
+  z-index: var(--z-content);
+  margin: 0;
+}
+
+.scroll-expand__opening-title {
+  inset: 50% auto auto 50%;
+  max-inline-size: min(78%, 42rem);
+  font-family: var(--font-display);
+  font-size: var(--text-expand-opening);
+  line-height: 1;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  opacity: calc(1 - var(--expand-content-opacity));
+}
+
+.scroll-expand__content {
+  inset-inline: max(var(--space-4), env(safe-area-inset-left)) max(var(--space-4), env(safe-area-inset-right));
+  inset-block-end: max(var(--space-8), env(safe-area-inset-bottom));
+  max-inline-size: var(--measure-expand-copy);
+  opacity: var(--expand-content-opacity);
+}
+
+.scroll-expand__content h2 {
+  min-inline-size: 0;
+  max-inline-size: 13ch;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-expand-title);
+  font-style: normal;
+  font-weight: var(--weight-regular);
+  letter-spacing: var(--tracking-display);
+  line-height: 1.02;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.scroll-expand__content p {
+  max-inline-size: clamp(24rem, 75vw, var(--measure-copy));
+  margin: var(--space-4) 0 0;
+  color: var(--color-expand-copy);
+  font-size: clamp(0.95rem, 1.65vw, 1.2rem);
+  line-height: 1.8;
+}
+
+.scroll-expand__copy-line {
+  display: block;
+}
+
+.scroll-expand__hint {
+  inset-inline-end: max(var(--space-4), env(safe-area-inset-right));
+  inset-block-end: max(var(--space-4), env(safe-area-inset-bottom));
+  color: var(--color-detail);
+  font-size: var(--text-cue);
+  letter-spacing: var(--tracking-detail);
+  text-transform: uppercase;
+  opacity: var(--expand-hint-opacity);
+}
+
+.scroll-expand__status {
+  inset-inline-start: max(var(--space-4), env(safe-area-inset-left));
+  inset-block-start: max(var(--space-4), env(safe-area-inset-top));
+  max-inline-size: var(--measure-status);
+  color: var(--color-expand-copy);
+  font-size: var(--text-status);
+}
+
+.scroll-expand__local-spacer {
+  block-size: calc((var(--expand-distance) + var(--expand-hold)) * 100%);
+}
+
+.scroll-expand[data-running="true"] .scroll-expand__frame,
+.scroll-expand[data-running="true"] .scroll-expand__media {
+  will-change: clip-path, transform;
+}
+
+.scroll-expand[data-reduced-motion="true"],
+.scroll-expand[data-reduced-motion="true"].scroll-expand--window {
+  block-size: 100svh;
+}
+
+.scroll-expand[data-reduced-motion="true"] .scroll-expand__hint,
+.scroll-expand[data-reduced-motion="true"] .scroll-expand__local-spacer {
+  display: none;
+}
+
+@media (min-width: 48rem) {
+  .scroll-expand__content {
+    inset-inline-start: max(var(--space-8), env(safe-area-inset-left));
+    inset-inline-end: max(var(--space-8), env(safe-area-inset-right));
+    inset-block-end: max(var(--space-10), env(safe-area-inset-bottom));
+  }
+
+  .scroll-expand__hint {
+    inset-inline-end: max(var(--space-8), env(safe-area-inset-right));
+    inset-block-end: max(var(--space-8), env(safe-area-inset-bottom));
+  }
+
+  .scroll-expand__copy-line {
+    display: inline;
+  }
+}
+
+/* A text-only bridge follows the image wall in normal flow, without a viewport-sized hold. */
+.scroll-expand.creation-bridge[data-enabled="false"] {
+  block-size: auto;
+}
+
+.creation-bridge .scroll-expand__stage {
+  position: relative;
+  block-size: auto;
+}
+
+.creation-bridge .scroll-expand__frame {
+  position: relative;
+  inset: auto;
+}
+
+.creation-bridge .scroll-expand__content {
+  position: relative;
+  inset: auto;
+  box-sizing: border-box;
+  inline-size: min(100%, var(--gallery-measure));
+  max-inline-size: none;
+  margin-inline: auto;
+  padding-block: clamp(var(--space-6), 4vw, var(--space-12));
+  padding-inline: max(var(--space-4), env(safe-area-inset-left)) max(var(--space-4), env(safe-area-inset-right));
+}
+
+@media (min-width: 48rem) {
+  .creation-bridge .scroll-expand__content {
+    padding-inline: max(var(--space-8), env(safe-area-inset-left)) max(var(--space-8), env(safe-area-inset-right));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-expand__media {
+    transition: none;
+  }
+}
