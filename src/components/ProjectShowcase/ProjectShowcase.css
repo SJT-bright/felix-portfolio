@@ -226,18 +226,47 @@
 .github-projects__card {
   position: relative;
   min-inline-size: 0;
-  overflow: clip;
-  border: var(--rule-thin) solid var(--color-project-border);
+  transition-delay: var(--github-project-delay, 0ms);
+}
+
+.github-projects__link {
+  position: relative;
+  display: block;
+  block-size: 100%;
+  min-block-size: 17rem;
   border-radius: var(--radius-project);
+  color: inherit;
+  text-decoration: none;
+}
+
+.github-projects__surface {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: var(--space-5);
+  box-sizing: border-box;
+  block-size: 100%;
+  min-block-size: 17rem;
+  overflow: clip;
+  padding: var(--space-6);
+  border: var(--rule-thin) solid var(--color-project-border);
+  border-radius: inherit;
   background:
     radial-gradient(circle at 92% 0%, var(--color-project-glow), var(--color-project-glow-fade) 48%),
     linear-gradient(145deg, var(--color-project-card), var(--color-project-surface));
   box-shadow: var(--shadow-project-rest);
-  transition-delay: var(--github-project-delay, 0ms);
+  transform: perspective(60rem) translate3d(0, 0, 0) rotateX(var(--github-rotate-x, 0deg)) rotateY(var(--github-rotate-y, 0deg));
+  transform-origin: center;
+  transition:
+    transform var(--dur-short) var(--ease-out),
+    border-color var(--dur-short) var(--ease-out),
+    box-shadow var(--dur-short) var(--ease-out);
 }
 
-.github-projects__card::before {
+.github-projects__surface::before {
   position: absolute;
+  z-index: 2;
   inset-block: 0;
   inset-inline-start: 0;
   inline-size: 0.18rem;
@@ -247,19 +276,75 @@
   pointer-events: none;
 }
 
-.github-projects__link {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  gap: var(--space-5);
-  min-block-size: 17rem;
-  padding: var(--space-6);
-  color: inherit;
-  text-decoration: none;
+.github-projects__spotlight {
+  position: absolute;
+  z-index: 0;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  inline-size: clamp(17rem, 34vw, 22rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--color-profile-accent) 24%, var(--color-archive-clear)),
+    color-mix(in srgb, var(--color-profile-accent-soft) 9%, var(--color-archive-clear)) 43%,
+    var(--color-archive-clear) 72%
+  );
+  opacity: 0;
+  pointer-events: none;
+  transform: translate3d(
+    calc(-50% + var(--github-pointer-offset-x, 0px)),
+    calc(-50% + var(--github-pointer-offset-y, 0px)),
+    0
+  );
+  transition: opacity var(--dur-short) var(--ease-out);
+}
+
+.github-projects__edge-glow {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  border: var(--rule-thin) solid color-mix(in srgb, var(--color-profile-accent) 32%, var(--color-archive-clear));
+  border-radius: inherit;
+  box-shadow: inset 0 0 1.4rem color-mix(in srgb, var(--color-profile-accent) 11%, var(--color-archive-clear));
+  content: "";
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-short) var(--ease-out);
+}
+
+.github-projects__edge-glow::before {
+  position: absolute;
+  inset-block: -38%;
+  inset-inline-start: -42%;
+  inline-size: 32%;
+  background: linear-gradient(
+    90deg,
+    var(--color-archive-clear),
+    color-mix(in srgb, var(--color-profile-accent-soft) 24%, var(--color-archive-clear)),
+    var(--color-archive-clear)
+  );
+  content: "";
+  opacity: 0;
+  transform: translate3d(-150%, 0, 0) rotate(14deg);
+}
+
+.github-projects__card-topline,
+.github-projects__copy,
+.github-projects__meta {
+  position: relative;
+  z-index: 2;
 }
 
 .github-projects__link:focus-visible {
   outline: var(--rule-progress) solid var(--color-focus);
-  outline-offset: calc(-1 * var(--space-2));
+  outline-offset: var(--space-1);
+}
+
+.github-projects__link:focus-visible .github-projects__surface {
+  border-color: color-mix(in srgb, var(--color-profile-accent) 68%, var(--color-project-border));
+  box-shadow: var(--shadow-project-active);
 }
 
 .github-projects__card-topline,
@@ -279,6 +364,7 @@
 .github-projects__card-topline .github-projects__logo {
   inline-size: 1.65rem;
   color: var(--color-profile-accent);
+  transition: transform var(--dur-short) var(--ease-out);
 }
 
 .github-projects__index {
@@ -291,6 +377,7 @@
 .github-projects__copy {
   align-self: center;
   min-inline-size: 0;
+  transition: transform var(--dur-short) var(--ease-out);
 }
 
 .github-projects__name-row {
@@ -362,8 +449,10 @@
 }
 
 .github-projects__open-cue {
+  display: inline-flex;
   color: var(--color-text);
   letter-spacing: 0.03em;
+  transition: color var(--dur-short) var(--ease-out), transform var(--dur-short) var(--ease-out);
 }
 
 @media (min-width: 48rem) {
@@ -379,20 +468,62 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .github-projects__card {
-    transition-property: opacity, transform, filter, border-color, box-shadow;
-  }
-
-  .github-projects__card:hover,
-  .github-projects__card:focus-within {
+  .github-projects__link:hover .github-projects__surface,
+  .github-projects__link:focus-visible .github-projects__surface {
     border-color: color-mix(in srgb, var(--color-profile-accent) 58%, var(--color-project-border));
     box-shadow: var(--shadow-project-active);
-    transform: translateY(-0.28rem);
+    transform: perspective(60rem) translate3d(0, -0.35rem, 0) rotateX(var(--github-rotate-x, 0deg)) rotateY(var(--github-rotate-y, 0deg));
+    will-change: transform;
   }
 
-  .github-projects__card:hover .github-projects__open-cue,
-  .github-projects__card:focus-within .github-projects__open-cue {
+  .github-projects__link:hover .github-projects__spotlight,
+  .github-projects__link:focus-visible .github-projects__spotlight,
+  .github-projects__link:hover .github-projects__edge-glow,
+  .github-projects__link:focus-visible .github-projects__edge-glow {
+    opacity: 1;
+  }
+
+  .github-projects__link:hover .github-projects__edge-glow::before,
+  .github-projects__link:focus-visible .github-projects__edge-glow::before {
+    animation: github-project-scan 760ms var(--ease-out) both;
+  }
+
+  .github-projects__link:hover .github-projects__card-topline .github-projects__logo,
+  .github-projects__link:focus-visible .github-projects__card-topline .github-projects__logo {
+    transform: translate3d(0, -0.12rem, 0) scale(1.08) rotate(-3deg);
+  }
+
+  .github-projects__link:hover .github-projects__copy,
+  .github-projects__link:focus-visible .github-projects__copy {
+    transform: translate3d(0, -0.08rem, 0);
+  }
+
+  .github-projects__link:hover .github-projects__open-cue,
+  .github-projects__link:focus-visible .github-projects__open-cue {
     color: var(--color-profile-accent);
+    transform: translate3d(0.22rem, -0.22rem, 0);
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .github-projects__link:active .github-projects__surface {
+    transform: scale(0.988);
+  }
+}
+
+@keyframes github-project-scan {
+  0% {
+    opacity: 0;
+    transform: translate3d(-150%, 0, 0) rotate(14deg);
+  }
+
+  24% {
+    opacity: 0.72;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(520%, 0, 0) rotate(14deg);
   }
 }
 
@@ -1173,6 +1304,23 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .github-projects__link,
+  .github-projects__surface,
+  .github-projects__card-topline .github-projects__logo,
+  .github-projects__copy,
+  .github-projects__open-cue {
+    transform: none !important;
+    transition: none;
+  }
+
+  .github-projects__spotlight,
+  .github-projects__edge-glow,
+  .github-projects__edge-glow::before {
+    animation: none !important;
+    opacity: 0;
+    transition: none;
+  }
+
   .project-card-body,
   .project-card-item {
     transform: none !important;

@@ -1,5 +1,86 @@
 import { githubProjects } from "../../data/githubProjects.js";
 
+const FINE_POINTER_QUERY = "(hover: hover) and (pointer: fine)";
+const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+const pointerFrames = new WeakMap();
+const pointerPositions = new WeakMap();
+
+let finePointerMedia;
+let reducedMotionMedia;
+
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function supportsPointerMotion(event) {
+  if (typeof window === "undefined" || event.pointerType === "touch") {
+    return false;
+  }
+
+  finePointerMedia ??= window.matchMedia(FINE_POINTER_QUERY);
+  reducedMotionMedia ??= window.matchMedia(REDUCED_MOTION_QUERY);
+
+  return (
+    finePointerMedia.matches
+    && !reducedMotionMedia.matches
+  );
+}
+
+function resetCardMotion(event) {
+  const surface = event.currentTarget;
+  const frame = pointerFrames.get(surface);
+
+  if (frame !== undefined) {
+    window.cancelAnimationFrame(frame);
+    pointerFrames.delete(surface);
+  }
+  pointerPositions.delete(surface);
+
+  surface.style.setProperty("--github-pointer-offset-x", "0px");
+  surface.style.setProperty("--github-pointer-offset-y", "0px");
+  surface.style.setProperty("--github-rotate-x", "0deg");
+  surface.style.setProperty("--github-rotate-y", "0deg");
+}
+
+function handleCardPointerMove(event) {
+  if (!supportsPointerMotion(event)) {
+    return;
+  }
+
+  const surface = event.currentTarget;
+  pointerPositions.set(surface, { clientX: event.clientX, clientY: event.clientY });
+
+  if (pointerFrames.has(surface)) {
+    return;
+  }
+
+  const frame = window.requestAnimationFrame(() => {
+    pointerFrames.delete(surface);
+    const pointer = pointerPositions.get(surface);
+
+    if (!pointer) {
+      return;
+    }
+    pointerPositions.delete(surface);
+
+    applyCardMotion(surface, pointer.clientX, pointer.clientY);
+  });
+  pointerFrames.set(surface, frame);
+}
+
+function applyCardMotion(surface, clientX, clientY) {
+  const rect = surface.getBoundingClientRect();
+  const localX = clamp(clientX - rect.left, 0, rect.width);
+  const localY = clamp(clientY - rect.top, 0, rect.height);
+  const horizontal = rect.width ? localX / rect.width - 0.5 : 0;
+  const vertical = rect.height ? localY / rect.height - 0.5 : 0;
+
+  surface.style.setProperty("--github-pointer-offset-x", `${localX - rect.width / 2}px`);
+  surface.style.setProperty("--github-pointer-offset-y", `${localY - rect.height / 2}px`);
+  surface.style.setProperty("--github-rotate-x", `${clamp(-vertical * 5.2, -2.6, 2.6).toFixed(2)}deg`);
+  surface.style.setProperty("--github-rotate-y", `${clamp(horizontal * 6.4, -3.2, 3.2).toFixed(2)}deg`);
+}
+
 function GitHubLogo({ decorative = false }) {
   return (
     <svg
@@ -51,36 +132,45 @@ export default function GitHubProjectList({ projects = githubProjects }) {
                 target="_blank"
                 rel="noreferrer noopener"
                 aria-label={`${project.title}，${isPrivate ? "私有项目" : "公开项目"}，在新窗口打开 GitHub`}
+                onPointerMove={handleCardPointerMove}
+                onPointerLeave={resetCardMotion}
+                onPointerCancel={resetCardMotion}
+                onBlur={resetCardMotion}
               >
-                <div className="github-projects__card-topline">
-                  <GitHubLogo decorative />
-                  <span className="github-projects__index" aria-hidden="true">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                </div>
+                <div className="github-projects__surface">
+                  <span className="github-projects__spotlight" aria-hidden="true" />
+                  <span className="github-projects__edge-glow" aria-hidden="true" />
 
-                <div className="github-projects__copy">
-                  <div className="github-projects__name-row">
-                    <h4 className="github-projects__project-title">{project.title}</h4>
-                    <span
-                      className={`github-projects__visibility github-projects__visibility--${project.visibility}`}
-                    >
-                      {isPrivate ? "私有" : "公开"}
+                  <div className="github-projects__card-topline">
+                    <GitHubLogo decorative />
+                    <span className="github-projects__index" aria-hidden="true">
+                      {String(index + 1).padStart(2, "0")}
                     </span>
                   </div>
-                  <p className="github-projects__repo-name">SJT-bright / {project.name}</p>
-                  <p className="github-projects__description">{project.description}</p>
-                </div>
 
-                <footer className="github-projects__meta">
-                  <span className="github-projects__language">
-                    <span className="github-projects__language-dot" aria-hidden="true" />
-                    {project.language}
-                  </span>
-                  <span className="github-projects__open-cue" aria-hidden="true">
-                    打开 GitHub ↗
-                  </span>
-                </footer>
+                  <div className="github-projects__copy">
+                    <div className="github-projects__name-row">
+                      <h4 className="github-projects__project-title">{project.title}</h4>
+                      <span
+                        className={`github-projects__visibility github-projects__visibility--${project.visibility}`}
+                      >
+                        {isPrivate ? "私有" : "公开"}
+                      </span>
+                    </div>
+                    <p className="github-projects__repo-name">SJT-bright / {project.name}</p>
+                    <p className="github-projects__description">{project.description}</p>
+                  </div>
+
+                  <footer className="github-projects__meta">
+                    <span className="github-projects__language">
+                      <span className="github-projects__language-dot" aria-hidden="true" />
+                      {project.language}
+                    </span>
+                    <span className="github-projects__open-cue" aria-hidden="true">
+                      打开 GitHub ↗
+                    </span>
+                  </footer>
+                </div>
               </a>
             </article>
           );
