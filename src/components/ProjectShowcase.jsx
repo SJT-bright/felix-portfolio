@@ -3,6 +3,7 @@ import "./ProjectShowcase/ProjectShowcase.css";
 
 import { BentoGrid, BentoGridItem } from "./ProjectShowcase/BentoGrid.jsx";
 import PortfolioEntryTransition from "./PortfolioEntryTransition.jsx";
+import GitHubProjectList from "./ProjectShowcase/GitHubProjectList.jsx";
 import ProjectCard from "./ProjectShowcase/ProjectCard.jsx";
 import { projectItems } from "../data/projectItems.js";
 import portfolioGatewayImage from "../assets/portfolio-gallery-backdrop.jpg";
@@ -82,7 +83,7 @@ export default function ProjectShowcase() {
     if (!("IntersectionObserver" in window)) {
       sectionElement
         .querySelectorAll(
-          ".project-showcase__header, .project-bento-grid__item--entry, .portfolio-gateway, .project-showcase__utility-section, .project-showcase__utility-card"
+          ".project-showcase__header, .project-bento-grid__item--entry, .github-projects, .github-projects__card, .portfolio-gateway, .project-showcase__utility-section, .project-showcase__utility-card"
         )
         .forEach((node) => {
           node.classList.add("is-visible");
@@ -93,6 +94,8 @@ export default function ProjectShowcase() {
     const revealTargets = [
       sectionElement.querySelector(".project-showcase__header"),
       ...sectionElement.querySelectorAll(".project-bento-grid__item--entry"),
+      sectionElement.querySelector(".github-projects"),
+      ...sectionElement.querySelectorAll(".github-projects__card"),
       sectionElement.querySelector(".portfolio-gateway"),
       sectionElement.querySelector(".project-showcase__utility-section"),
       ...sectionElement.querySelectorAll(".project-showcase__utility-card"),
@@ -162,6 +165,7 @@ export default function ProjectShowcase() {
             </BentoGridItem>
           ))}
         </BentoGrid>
+        <GitHubProjectList />
         <aside id="portfolio-gallery" tabIndex={-1} className="portfolio-gateway" aria-label="Felix 影像馆入口">
           <figure className="portfolio-gateway__photo" aria-hidden="true">
             <span className="portfolio-gateway__photo-fallback">影像馆人物写真背景</span>

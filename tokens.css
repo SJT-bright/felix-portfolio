@@ -61,6 +61,7 @@
 
   --font-display: Didot, "Bodoni MT", "Bodoni 72", "Times New Roman", serif;
   --font-body: Aptos, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   --space-1: 0.25rem;
   --space-2: 0.5rem;
